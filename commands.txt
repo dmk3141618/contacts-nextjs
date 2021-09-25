@@ -8,3 +8,10 @@ https://create-react-app.dev/docs/adding-a-sass-stylesheet/
 
 npm install babel-plugin-root-import -D
 https://nextjs.org/docs/advanced-features/customizing-babel-config
+
+eslint with prettier
+https://nextjs.org/docs/basic-features/eslint#core-web-vitals
+eslint-config-next 안에 https://www.npmjs.com/package/eslint-config-next 와 같이 이미 typescript 및 기본 설정 다 되어 있다.
+prettier 와 함께 사용하는 설정은 안되어 있어서 그 부분만 추가해주면 된다.
+npm install eslint-config-prettier eslint-plugin-prettier -D
+

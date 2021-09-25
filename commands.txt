@@ -21,3 +21,9 @@ styled-components
 https://nextjs.org/docs/basic-features/built-in-css-support#css-in-js
 npm install styled-components polished classnames
 npm install @types/styled-components babel-plugin-styled-components -D
+
+testing
+https://nextjs.org/docs/testing ( 참고용: https://www.youtube.com/watch?v=W0cyIehV9_4 )
+npm install --save-dev cypress
+npm install --save-dev jest babel-jest @testing-library/react @testing-library/jest-dom identity-obj-proxy react-test-renderer
+npm install --save-dev @types/jest @testing-library/user-event @testing-library/dom

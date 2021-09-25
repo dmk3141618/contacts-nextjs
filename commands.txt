@@ -2,6 +2,8 @@ npx create-next-app --ts
 
 CRA 문서에서는 아직 node-sass 를 설치하라고 되어 있다. 이건 deprecated 되어서 dart-sass 를 설치해야한다. npm install sass
 그리고 CRA 문서에서는 node_modules 도 SASS_PATH 에 넣어주라고 되어 있다. nextjs 는 그냥 includePaths 에 node_modules 넣으라는 언급은 없다.
+=> https://nextjs.org/docs/basic-features/built-in-css-support#import-styles-from-node_modules 이부분에 언급되어 있다. 기본적으로 node_modules 포함하고 있다.
+그러니 nextjs 에서는 아래와 같이 ~ 붙이지 않아도 된다.
 만약 필요하다면 차후 ~ 를 앞에 붙여서 node_modules 에 있는 것을 가져오는 방식으로 하자. CRA 의 경우 CRA 의 것 대로 node_modules 를 SASS_PATH 에 넣는 식으로 따르자.
 https://nextjs.org/docs/basic-features/built-in-css-support#sass-support
 https://create-react-app.dev/docs/adding-a-sass-stylesheet/
@@ -15,3 +17,7 @@ eslint-config-next 안에 https://www.npmjs.com/package/eslint-config-next 와 �
 prettier 와 함께 사용하는 설정은 안되어 있어서 그 부분만 추가해주면 된다.
 npm install eslint-config-prettier eslint-plugin-prettier -D
 
+styled-components
+https://nextjs.org/docs/basic-features/built-in-css-support#css-in-js
+npm install styled-components polished classnames
+npm install @types/styled-components babel-plugin-styled-components -D

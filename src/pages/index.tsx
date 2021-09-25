@@ -1,7 +1,13 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import styles from '~/pages/Home.module.css';
+import styles from '~/pages/Home.module.scss';
+import styled from 'styled-components';
+
+const Title = styled.h1`
+  font-size: 50px;
+  color: ${({theme}) => theme.color.deepBlue};
+`;
 
 const Home: NextPage = () => {
   return (
@@ -13,6 +19,8 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        <Title>Home Page</Title>
+
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>

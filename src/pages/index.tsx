@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import {ReactElement, useCallback, useMemo, useReducer, useRef, useState} from 'react';
+import {ReactElement, useCallback, useEffect, useMemo, useReducer, useRef, useState} from 'react';
 import AppLayout from '~/common/component/AppLayout';
 import Button from '~/common/component/Button';
 import Icon from '~/common/component/Icon';
@@ -11,6 +11,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import styled from 'styled-components';
 import {v1 as uuidv1} from 'uuid';
 import {IContact} from '~/typings/db';
+import useLocalStorage from '~/common/hook/useLocalStorage';
 
 const PageWrap = styled.div`
   display: flex;
@@ -289,6 +290,7 @@ function contactsReducer(state: IContact[], action: Action): IContact[] {
 }
 function Home() {
   const [contactsState, dispatch] = useReducer(contactsReducer, []);
+  const [storedValue, setValue] = useLocalStorage('contactsforjustcomponent', contactsState);
 
   const [contactFormTitle, setContactFormTitle] = useState<string>('Add a new contact');
 
@@ -297,6 +299,17 @@ function Home() {
   const onShowOnlyFavoritesToggle = useCallback(() => {
     setIsShowOnlyFavorites(prev => !prev);
   }, []);
+
+  useEffect(() => {
+    dispatch({
+      type: 'INIT',
+      contacts: storedValue ?? [],
+    });
+  }, []);
+
+  useEffect(() => {
+    setValue(contactsState);
+  }, [contactsState, setValue]);
 
   const contacts = useMemo(() => {
     if (isShowOnlyFavorites) {

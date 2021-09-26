@@ -44,12 +44,12 @@ export default function Header() {
           </Link>
         </HeaderNavLi>
         <HeaderNavLi>
-          <Link href="/preview-components">
+          <Link href="preview-components">
             <HeaderNavItem>Preview Components</HeaderNavItem>
           </Link>
         </HeaderNavLi>
         <HeaderNavLi>
-          <Link href="/about">
+          <Link href="about">
             <HeaderNavItem>About</HeaderNavItem>
           </Link>
         </HeaderNavLi>

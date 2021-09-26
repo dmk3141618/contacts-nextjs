@@ -25,7 +25,7 @@ interface IconProps {
   icon: IconsType;
 }
 // type Props = React.ImgHTMLAttributes<HTMLImageElement> & IconProps;
-type Props = ImageProps & IconProps;
+type Props = Omit<ImageProps, 'src'> & IconProps;
 function Icon({icon, width = 24, height = 24, ...rest}: Props) {
   return <StyledIcon {...rest} src={icons[icon]} width={width} height={height} />;
 }

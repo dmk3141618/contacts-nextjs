@@ -1,6 +1,5 @@
 import React, {useState, useEffect, PropsWithChildren} from 'react';
 import styled, {keyframes, css} from 'styled-components';
-import Button from '~/common/component/Button';
 
 const fadeIn = keyframes`
   from {
@@ -87,37 +86,12 @@ const DialogBlock = styled.div<{disappear: boolean}>`
     `}
 `;
 
-const ButtonGroup = styled.div`
-  margin-top: 2rem;
-  display: flex;
-  justify-content: flex-start;
-`;
-
-const DialogButton = styled(Button)`
-  font-size: 1.5rem;
-  & + & {
-    margin-left: 0.5rem;
-  }
-`;
-
 interface DialogProps {
   title?: string;
-  confirmText?: string;
-  cancelText?: string;
-  onConfirm?: () => void;
-  onCancel?: () => void;
   visible?: boolean;
 }
 type Props = PropsWithChildren<DialogProps>;
-function Dialog({
-  children,
-  title,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  onConfirm = () => {},
-  onCancel = () => {},
-  visible = false,
-}: Props) {
+function DialogFull({children, title, visible = false}: Props) {
   const [animate, setAnimate] = useState(false);
   const [localVisible, setLocalVisible] = useState(visible);
 
@@ -136,17 +110,9 @@ function Dialog({
       <DialogBlock disappear={!visible}>
         <h3>{title}</h3>
         <div className="content">{children}</div>
-        <ButtonGroup>
-          <DialogButton color="grayBase" onClick={onCancel} size={'large'}>
-            {cancelText}
-          </DialogButton>
-          <DialogButton color="deepPink" onClick={onConfirm} size={'large'}>
-            {confirmText}
-          </DialogButton>
-        </ButtonGroup>
       </DialogBlock>
     </DarkBackground>
   );
 }
 
-export default Dialog;
+export default React.memo(DialogFull);

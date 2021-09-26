@@ -42,3 +42,7 @@ npm install @next/bundle-analyzer --save-dev
 error - ./src/assets/icons/heart-blank.png
 TypeError: unsupported file type: undefined (file: undefined)
 
+npm install react-hook-form yup @hookform/resolvers@2.8.0
+
+npm install uuid
+npm install @types/uuid --save-dev

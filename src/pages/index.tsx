@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import {ReactElement, useCallback, useEffect, useMemo, useReducer, useRef, useState} from 'react';
+import {ReactElement, useCallback, useState} from 'react';
 import AppLayout from '~/common/component/AppLayout';
 import Button from '~/common/component/Button';
 import Icon from '~/common/component/Icon';
@@ -11,7 +11,14 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import styled from 'styled-components';
 import {v1 as uuidv1} from 'uuid';
 import {IContact} from '~/typings/db';
-import useLocalStorage from '~/common/hook/useLocalStorage';
+import {
+  addOneContact,
+  removeOneContact,
+  selectAllOrFavoriteContacts,
+  updateOneContact,
+} from '~/common/state/contacts';
+import {useAppDispatch, useAppSelector, wrapper} from '~/common/store';
+import {GetServerSideProps} from 'next';
 
 const PageWrap = styled.div`
   display: flex;
@@ -251,46 +258,8 @@ interface ContactFormValuesType {
   email: string;
   phone?: string;
 }
-type Action =
-  | {type: 'INIT'; contacts: IContact[]}
-  | {type: 'CREATE'; contact: IContact}
-  | {type: 'UPDATE'; contact: IContact}
-  | {type: 'DELETE'; id: string}
-  | {type: 'TOGGLE_FAVORITE'; id: string};
-function contactsReducer(state: IContact[], action: Action): IContact[] {
-  switch (action.type) {
-    case 'INIT':
-      return [...action.contacts];
-    case 'CREATE':
-      return state.concat(action.contact);
-    case 'UPDATE':
-      const foundIndex = state.findIndex(contact => contact.id === action.contact.id);
-      if (foundIndex === -1) {
-        return state;
-      }
-      return state
-        .slice(0, foundIndex)
-        .concat({
-          id: state[foundIndex].id,
-          name: action.contact.name,
-          email: action.contact.email,
-          phone: action.contact.phone,
-          isFavorite: state[foundIndex].isFavorite,
-        })
-        .concat(state.slice(foundIndex + 1));
-    case 'DELETE':
-      return state.filter(contact => contact.id !== action.id);
-    case 'TOGGLE_FAVORITE':
-      return state.map(contact =>
-        contact.id === action.id ? {...contact, isFavorite: !contact.isFavorite} : contact,
-      );
-    default:
-      throw new Error('Unhandled action');
-  }
-}
 function Home() {
-  const [contactsState, dispatch] = useReducer(contactsReducer, []);
-  const [storedValue, setValue] = useLocalStorage('contactsforjustcomponent', contactsState);
+  const dispatch = useAppDispatch();
 
   const [contactFormTitle, setContactFormTitle] = useState<string>('Add a new contact');
 
@@ -300,24 +269,7 @@ function Home() {
     setIsShowOnlyFavorites(prev => !prev);
   }, []);
 
-  useEffect(() => {
-    dispatch({
-      type: 'INIT',
-      contacts: storedValue ?? [],
-    });
-  }, []);
-
-  useEffect(() => {
-    setValue(contactsState);
-  }, [contactsState, setValue]);
-
-  const contacts = useMemo(() => {
-    if (isShowOnlyFavorites) {
-      return contactsState.filter(contact => contact.isFavorite);
-    } else {
-      return contactsState;
-    }
-  }, [contactsState, isShowOnlyFavorites]);
+  const contacts = useAppSelector(state => selectAllOrFavoriteContacts(state, isShowOnlyFavorites));
 
   // delete
   const [selectedContact, setSelectedContact] = useState<IContact | null>(null);
@@ -331,7 +283,7 @@ function Home() {
   );
   const onConfirmDeleteConfirm = useCallback(() => {
     if (selectedContact) {
-      dispatch({type: 'DELETE', id: selectedContact.id});
+      dispatch(removeOneContact(selectedContact.id));
     }
     setSelectedContact(null);
     setShowDeleteConfirmDialog(false);
@@ -384,7 +336,7 @@ function Home() {
         phone: data.phone,
         isFavorite: selectedContact.isFavorite,
       };
-      dispatch({type: 'UPDATE', contact});
+      dispatch(updateOneContact(contact));
     } else {
       const contact: IContact = {
         id: uuidv1(),
@@ -393,7 +345,7 @@ function Home() {
         phone: data.phone,
         isFavorite: false,
       };
-      dispatch({type: 'CREATE', contact});
+      dispatch(addOneContact(contact));
     }
     setShowContactFormDialog(false);
     setSelectedContact(null);
@@ -416,7 +368,7 @@ function Home() {
   // favorite
   const onContactFavoriteToggle = useCallback(
     (contact: IContact) => () => {
-      dispatch({type: 'TOGGLE_FAVORITE', id: contact.id});
+      dispatch(updateOneContact({...contact, isFavorite: !contact.isFavorite}));
     },
     [dispatch],
   );
@@ -561,5 +513,29 @@ function Home() {
 Home.getLayout = function getLayout(page: ReactElement) {
   return <AppLayout>{page}</AppLayout>;
 };
+
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
+  store => async context => {
+    const contact1: IContact = {
+      id: uuidv1(),
+      name: 'test1',
+      email: 'test1@gmail.com',
+      phone: '1234567890',
+      isFavorite: true,
+    };
+    await store.dispatch(addOneContact(contact1));
+    const contact2: IContact = {
+      id: uuidv1(),
+      name: 'test1',
+      email: 'test1@gmail.com',
+      phone: '1234567890',
+      isFavorite: false,
+    };
+    await store.dispatch(addOneContact(contact2));
+    return {props: {}};
+  },
+);
+
+// export const getServerSideProps = wrapper.getServerSideProps(store => ({req, res, ...etc}) => {});
 
 export default Home;

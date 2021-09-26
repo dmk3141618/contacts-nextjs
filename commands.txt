@@ -46,3 +46,21 @@ npm install react-hook-form yup @hookform/resolvers@2.8.0
 
 npm install uuid
 npm install @types/uuid --save-dev
+
+
+https://qnrjs42.blog/react/nextjs-redux-toolkit
+https://github.com/kirill-konshin/next-redux-wrapper#usage-with-redux-persist
+npm i react-redux next-redux-wrapper @reduxjs/toolkit redux-persist normalizr redux-logger
+npm i -D @types/react-redux @types/redux-logger
+
+일단 공식 문서를 참조해서 최대한 표준에 맞게 typescript, next-redux-wrapper 와 조합해보았다.
+하지만 redux-persist 와 nextjs 는 궁합이 맞지 않아 보인다. getServerSideProps 를 사용해서 dispatch 된 store 가 redux-persist 의 REHYDRATE 로 리셋 된다.
+그러면 ServerSide 쪽에서 redux store 미리 셋팅한 부분이 사라진다. 그냥 store 전체가 통으로 변경된다. 물론 store.ts 에 그렇게 되도록 했기 때문이지만.
+또한 typescript 의 type 사용에 어려움을 준다. redux-persist 는 브라우저에서만 동작해야 해서 store 생성 로직을 typeof window 를 검사해서 isServer 인지 브라우저인지 구분해서
+store 와 reducer 를 만들어 리턴하게 되는데 이렇게 lazy 하게 셋팅되면 type 을 정의하여 사용하기 까다롭다.
+PersistGate 를 입히는 부분에 있어서도 type 에 ! 를 사용해야 한다. 서버사이드의 렌더링 dom 과 브라우저의 렌더링 dom 이 다를 경우 콘솔에 에러를 보여준다. 참고.
+PersistGate 에 localstorage 에서 REHYDRATE 가 끝나기 전까진 loading 이 표시되는 것은 같기 때문에 nextjs 의 장점을 저하시킬 수 있지만 이건 큰 문제 같진 않다.
+아무튼 둘의 궁합이 잘 맞지 않는다. 가장 큰 두가지가 typescript 를 난해하게 만들고 getServerSideProps 부분의 dispatch 부분을 다시 persist 가 리셋해버리는 부분이다.
+물론 getServerSideProps 부분에서 dispatch 한 것을 리셋해버리는 것은 persist 하지 않을 것들은 골라서 리셋 안하도록 할 수도 있지만...
+nextjs 의 경우 redux-persist 를 사용하기 보단 https://github.com/bjoluc/next-redux-cookie-wrapper 이런걸 참고해서 persist 할 것들을 따로 관리하도록 하는 것이 좋아 보인다.
+

@@ -27,3 +27,18 @@ https://nextjs.org/docs/testing ( 참고용: https://www.youtube.com/watch?v=W0c
 npm install --save-dev cypress
 npm install --save-dev jest babel-jest @testing-library/react @testing-library/jest-dom identity-obj-proxy react-test-renderer
 npm install --save-dev @types/jest @testing-library/user-event @testing-library/dom
+
+image
+https://velog.io/@pyo-sh/React-NextJS-에서-이미지-import-하기
+https://nextjs.org/docs/api-reference/next/image
+https://www.npmjs.com/package/next-images
+https://velog.io/@yhg0337/Next-3zkhp8cb
+https://nextjs.org/docs/api-reference/next.config.js/introduction
+https://nextjs.org/docs/basic-features/typescript
+npm install next-images
+npm install next-compose-plugins --save-dev
+npm install @next/bundle-analyzer --save-dev
+다음과 같은 오류가 날 수 있다. disableStaticImages: true 해주면 된다.
+error - ./src/assets/icons/heart-blank.png
+TypeError: unsupported file type: undefined (file: undefined)
+

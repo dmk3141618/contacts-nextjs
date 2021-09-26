@@ -1,4 +1,5 @@
 import React from 'react';
+import Image, {ImageProps} from 'next/image';
 import styled from 'styled-components';
 
 import heartBlank from '~/assets/icons/heart-blank.png';
@@ -11,17 +12,22 @@ const icons = {
 
 export type IconsType = keyof typeof icons;
 
-const StyledIcon = styled.img`
-  width: 2.4rem;
-  height: 2.4rem;
+// const StyledIcon = styled.img`
+//   width: 2.4rem;
+//   height: 2.4rem;
+// `;
+const StyledIcon = styled(Image)`
+  //width: 2.4rem;
+  //height: 2.4rem;
 `;
 
 interface IconProps {
   icon: IconsType;
 }
-type Props = React.ImgHTMLAttributes<HTMLImageElement> & IconProps;
-function Icon({icon, ...rest}: Props) {
-  return <StyledIcon src={icons[icon]} {...rest} />;
+// type Props = React.ImgHTMLAttributes<HTMLImageElement> & IconProps;
+type Props = ImageProps & IconProps;
+function Icon({icon, width = 24, height = 24, ...rest}: Props) {
+  return <StyledIcon {...rest} src={icons[icon]} width={width} height={height} />;
 }
 
 export default React.memo(Icon);
